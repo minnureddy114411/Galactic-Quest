@@ -41,6 +41,24 @@
       border-radius: 10px;
       display: none;
     }
+    #touchControls {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      z-index: 10;
+    }
+    #touchControls button {
+      font-size: 24px;
+      padding: 20px;
+      border-radius: 50%;
+      border: none;
+      background-color: #333;
+      color: white;
+      box-shadow: 0 0 10px #000;
+    }
   </style>
 </head>
 <body>
@@ -48,6 +66,12 @@
   <div id="healthBar"><div id="health"></div></div>
   <div id="story">Objective: Explore the galaxy. Collect all keys in 10 levels to restore peace!</div>
   <div id="pauseOverlay">PAUSED</div>
+  <div id="touchControls">
+    <button id="leftBtn">←</button>
+    <button id="rightBtn">→</button>
+    <button id="jumpBtn">↑</button>
+    <button id="shootBtn">💥</button>
+  </div>
   <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
@@ -274,6 +298,29 @@
 
     document.addEventListener("keyup", e => {
       if (["ArrowRight", "ArrowLeft"].includes(e.key)) player.dx = 0;
+    });
+
+    // Touch controls
+    document.getElementById("leftBtn").addEventListener("touchstart", () => {
+      player.dx = -player.speed;
+      player.facing = "left";
+    });
+    document.getElementById("rightBtn").addEventListener("touchstart", () => {
+      player.dx = player.speed;
+      player.facing = "right";
+    });
+    document.getElementById("jumpBtn").addEventListener("touchstart", () => {
+      if (!player.jumping) {
+        player.dy = -player.jumpPower;
+        player.jumping = true;
+      }
+    });
+    document.getElementById("shootBtn").addEventListener("touchstart", () => shoot());
+
+    ["leftBtn", "rightBtn"].forEach(id => {
+      document.getElementById(id).addEventListener("touchend", () => {
+        player.dx = 0;
+      });
     });
 
     generateLevel(level);
